@@ -2,12 +2,12 @@
 name: continuous-learning
 description: |
   Continuous learning system that extracts reusable knowledge from work sessions.
-  Triggers: (1) /retrospective command to review session learnings, (2) "save this as a skill"
+  Triggers: (1) /continuous-learning command to review session learnings, (2) "save this as a skill"
   or "extract a skill from this", (3) "what did we learn?", (4) After any task involving
   non-obvious debugging, workarounds, or trial-and-error discovery. Creates new Claude Code
   skills when valuable, reusable knowledge is identified.
 author: Claude Code
-version: 2.5.0
+version: 2.6.0
 allowed-tools:
   - Read
   - Write
@@ -185,7 +185,7 @@ executable helpers.
 
 ## Retrospective Mode
 
-When `/retrospective` is invoked at the end of a session:
+When `/continuous-learning` is invoked at the end of a session:
 
 1. **Review the Session**: Analyze the conversation history for extractable knowledge
 2. **Identify Candidates**: List potential skills with brief justifications
@@ -333,7 +333,7 @@ Invoke this skill immediately after completing a task when ANY of these apply:
 ### Explicit Invocation
 
 Also invoke when:
-- User says `/retrospective` to review the session
+- User runs `/continuous-learning` to review the session
 - User says "save this as a skill" or similar
 - User asks "what did we learn?"
 
