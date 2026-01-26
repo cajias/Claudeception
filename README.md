@@ -113,7 +113,31 @@ Save what we just learned as a skill
 
 ### What Gets Extracted
 
-Not every task produces a skill. It only extracts knowledge that required actual discovery (not just reading docs), will help with future tasks, has clear trigger conditions, and has been verified to work.
+Claudeception extracts two forms of knowledge:
+
+1. **Skills**: Solutions, patterns, and debugging knowledge for solving problems when they occur
+2. **Rules**: Automated checks (linters, CI/CD, git hooks) for preventing problems before they happen
+
+Not every task produces extractable knowledge. It only extracts:
+- Knowledge that required actual discovery (not just reading docs)
+- Solutions that will help with future tasks
+- Patterns with clear trigger conditions
+- Approaches that have been verified to work
+- Problems that can be prevented with automation
+
+**Example**: After debugging a circular dependency issue:
+- **Skill extracted**: How to detect and resolve circular dependencies manually
+- **Rule extracted**: ESLint configuration to prevent circular dependencies automatically
+
+## Skill vs Rule Extraction
+
+| Extract a **Skill** when: | Extract a **Rule** when: |
+|---------------------------|-------------------------|
+| Knowledge is about solving a problem | Problem can be prevented automatically |
+| Manual steps are required | Automated checking is possible |
+| Context-dependent judgment needed | Clear pass/fail criteria exist |
+
+Best practice: Often you'll extract **both**—a skill for solving the problem when it occurs, and a rule for preventing it in the future.
 
 ## Research
 
@@ -127,13 +151,15 @@ Agents that persist what they learn do better than agents that start fresh.
 
 Claude Code has a native skills system. At startup, it loads skill names and descriptions (about 100 tokens each). When you're working, it matches your current context against those descriptions and pulls in relevant skills.
 
-But this retrieval system can be written to, not just read from. So when this skill notices extractable knowledge, it writes a new skill with a description optimized for future retrieval.
+But this retrieval system can be written to, not just read from. So when this skill notices extractable knowledge, it writes new skills and rules with descriptions optimized for future retrieval.
 
 The description matters a lot. "Helps with database problems" won't match anything useful. "Fix for PrismaClientKnownRequestError in serverless" will match when someone hits that error.
 
 More on the skills architecture [here](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills).
 
-## Skill Format
+## File Formats
+
+### Skill Format
 
 Extracted skills are markdown files with YAML frontmatter:
 
@@ -166,17 +192,66 @@ date: 2024-01-15
 
 See `resources/skill-template.md` for the full template.
 
+### Rule Format
+
+Extracted rules document automated checks and preventions:
+
+```yaml
+---
+name: typescript-no-circular-imports
+type: rule
+rule-type: eslint
+description: |
+  Prevents circular import dependencies in TypeScript/JavaScript projects.
+  Use when experiencing "Cannot access before initialization" errors or
+  to proactively prevent circular dependency issues.
+author: Claude Code
+version: 1.0.0
+date: 2024-03-10
+---
+
+# ESLint Rule: No Circular Imports
+
+## Problem
+[What this rule prevents]
+
+## Context / When to Apply
+[When to add this rule to a project]
+
+## Rule Configuration
+[Complete configuration for the linter/tool]
+
+## Installation
+[Step-by-step setup]
+
+## What It Catches
+[Examples of violations and fixes]
+
+## Verification
+[How to test the rule]
+```
+
+See `resources/rule-template.md` for the full template.
+
 ## Quality Gates
 
-The skill is picky about what it extracts. If something is just a documentation lookup, or only useful for this one case, or hasn't actually been tested, it won't create a skill. Would this actually help someone who hits this problem in six months? If not, no skill.
+The system is selective about what it extracts:
+
+**For Skills**: If something is just a documentation lookup, or only useful for this one case, or hasn't actually been tested, it won't create a skill. Would this actually help someone who hits this problem in six months? If not, no skill.
+
+**For Rules**: If a problem can't be automatically detected, or the rule would have too many false positives, or it's just style/formatting (use Prettier), it won't create a rule. Will this rule prevent real bugs and save more time than it costs to run? If not, no rule.
 
 ## Examples
 
-See `examples/` for sample skills:
+See `examples/` for samples:
 
-- `nextjs-server-side-error-debugging/`: errors that don't show in browser console
-- `prisma-connection-pool-exhaustion/`: the "too many connections" serverless problem
-- `typescript-circular-dependency/`: detecting and fixing import cycles
+**Skills:**
+- `nextjs-server-side-error-debugging/`: Errors that don't show in browser console
+- `prisma-connection-pool-exhaustion/`: The "too many connections" serverless problem
+- `typescript-circular-dependency/`: Detecting and fixing import cycles
+
+**Rules:**
+- `typescript-circular-dependency-rule/`: ESLint rule to prevent circular imports automatically
 
 ## Contributing
 
