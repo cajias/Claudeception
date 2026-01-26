@@ -63,7 +63,46 @@ Before extracting, verify the knowledge meets these criteria:
 
 ## Extraction Process
 
-### Step 1: Identify the Knowledge
+### Step 1: Check for Existing Skills
+
+**Goal:** Find related skills before creating. Decide: update or create new.
+
+```sh
+# Skill directories (project-first, then user-level)
+SKILL_DIRS=(
+  ".claude/skills"
+  "$HOME/.claude/skills"
+  "$HOME/.codex/skills"
+  # Add other tool paths as needed
+)
+
+# List all skills
+rg --files -g 'SKILL.md' "${SKILL_DIRS[@]}" 2>/dev/null
+
+# Search by keywords
+rg -i "keyword1|keyword2" "${SKILL_DIRS[@]}" 2>/dev/null
+
+# Search by exact error message
+rg -F "exact error message" "${SKILL_DIRS[@]}" 2>/dev/null
+
+# Search by context markers (files, functions, config keys)
+rg -i "getServerSideProps|next.config.js|prisma.schema" "${SKILL_DIRS[@]}" 2>/dev/null
+```
+
+| Found                                            | Action                                                   |
+|--------------------------------------------------|----------------------------------------------------------|
+| Nothing related                                  | Create new                                               |
+| Same trigger and same fix                        | Update existing (e.g., `version: 1.0.0` → `1.1.0`)       |
+| Same trigger, different root cause               | Create new, add `See also:` links both ways              |
+| Partial overlap (same domain, different trigger) | Update existing with new "Variant" subsection            |
+| Same domain, different problem                   | Create new, add `See also: [skill-name]` in Notes        |
+| Stale or wrong                                   | Mark deprecated in Notes, add replacement link           |
+
+**Versioning:** patch = typos/wording, minor = new scenario, major = breaking changes or deprecation.
+
+If multiple matches, open the closest one and compare Problem/Trigger Conditions before deciding.
+
+### Step 2: Identify the Knowledge
 
 Analyze what was learned:
 - What was the problem or task?
@@ -71,7 +110,7 @@ Analyze what was learned:
 - What would someone need to know to solve this faster next time?
 - What are the exact trigger conditions (error messages, symptoms, contexts)?
 
-### Step 2: Research Best Practices (When Appropriate)
+### Step 3: Research Best Practices (When Appropriate)
 
 Before creating the skill, search the web for current information when:
 
@@ -115,7 +154,7 @@ Before creating the skill, search the web for current information when:
 - Include warnings about deprecated patterns in the "Notes" section
 - Mention official recommendations where applicable
 
-### Step 3: Structure the Skill
+### Step 4: Structure the Skill
 
 Create a new skill with this structure:
 
@@ -155,7 +194,7 @@ date: [YYYY-MM-DD]
 [Optional: Links to official documentation, articles, or resources that informed this skill]
 ```
 
-### Step 4: Write Effective Descriptions
+### Step 5: Write Effective Descriptions
 
 The description field is critical for skill discovery. Include:
 
@@ -173,7 +212,7 @@ description: |
   Turborepo, and npm workspaces.
 ```
 
-### Step 5: Save the Skill
+### Step 6: Save the Skill
 
 Save new skills to the appropriate location:
 
