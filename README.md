@@ -11,13 +11,13 @@ This skill fixes that. When Claude Code discovers something non-obvious (a debug
 **User-level (recommended)**
 
 ```bash
-git clone https://github.com/blader/Claudeception.git ~/.claude/skills/claudeception
+git clone https://github.com/cajias/Claudeception.git ~/.claude/skills/claudeception
 ```
 
 **Project-level**
 
 ```bash
-git clone https://github.com/blader/Claudeception.git .claude/skills/claudeception
+git clone https://github.com/cajias/Claudeception.git .claude/skills/claudeception
 ```
 
 ### Step 2: Set up the activation hook (recommended)
