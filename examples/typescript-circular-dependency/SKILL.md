@@ -235,3 +235,4 @@ export class OrderService implements IOrderService {
 - Jest/Vitest may handle module resolution differently than your bundler
 - Some bundlers (Webpack, Vite) have better cycle handling than others
 - `require()` can sometimes mask circular dependency issues that `import` exposes
+- **For automated prevention**: See [typescript-no-circular-imports rule](../typescript-circular-dependency-rule/RULE.md) to prevent circular dependencies via ESLint
